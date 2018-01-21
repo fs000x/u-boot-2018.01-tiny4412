@@ -1,23 +1,32 @@
 /*
  * Copyright (C) 2011 Samsung Electronics
  *
- * Configuration settings for the SAMSUNG ORIGEN (EXYNOS4210) board.
+ * Configuration settings for the SAMSUNG TINY4412 (EXYNOS4412) board.
  *
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#ifndef __CONFIG_ORIGEN_H
-#define __CONFIG_ORIGEN_H
+#ifndef __CONFIG_TINY4412_H
+#define __CONFIG_TINY4412_H
 
 #include <configs/exynos4-common.h>
 
 /* High Level Configuration Options */
-#define CONFIG_EXYNOS4210		1	/* which is a EXYNOS4210 SoC */
-#define CONFIG_ORIGEN			1	/* working with ORIGEN*/
+#define CONFIG_EXYNOS4412		1	/* which is a EXYNOS4412 SoC */
+#define CONFIG_TINY4412			1	/* working with TINY4412*/
+
+/* DEBUG UART */
+#define CONFIG_DEBUG_UART           1
+#define CONFIG_SPL_SERIAL_SUPPORT   1
+#define CONFIG_SPL_GPIO_SUPPORT     1
+#define CONFIG_DEBUG_UART_S5P       1
+#define CONFIG_DEBUG_UART_BASE      0x13800000
+#define CONFIG_DEBUG_UART_CLOCK     (100000000)
+/* END DEBUG UART */
 
 #define CONFIG_SYS_DCACHE_OFF		1
 
-/* ORIGEN has 4 bank of DRAM */
+/* TINY4412 has 4 bank of DRAM */
 #define CONFIG_NR_DRAM_BANKS		4
 #define CONFIG_SYS_SDRAM_BASE		0x40000000
 #define PHYS_SDRAM_1			CONFIG_SYS_SDRAM_BASE
@@ -30,13 +39,13 @@
 
 #define CONFIG_SYS_TEXT_BASE		0x43E00000
 
-#define CONFIG_MACH_TYPE		MACH_TYPE_ORIGEN
+#define CONFIG_MACH_TYPE		MACH_TYPE_TINY4412
 
 /* select serial console configuration */
-#define CONFIG_SERIAL2
+#define CONFIG_SERIAL0
 
 /* Console configuration */
-#define CONFIG_DEFAULT_CONSOLE		"console=ttySAC1,115200n8\0"
+#define CONFIG_DEFAULT_CONSOLE		"console=ttySAC0,115200n8\0"
 
 #define CONFIG_SYS_MEM_TOP_HIDE	(1 << 20)	/* ram console */
 
@@ -51,14 +60,14 @@
 
 /* MMC SPL */
 #define COPY_BL2_FNPTR_ADDR	0x02020030
-#define CONFIG_SPL_TEXT_BASE	0x02021410
+#define CONFIG_SPL_TEXT_BASE	0x02023400
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"loadaddr=0x40007000\0" \
 	"rdaddr=0x48000000\0" \
 	"kerneladdr=0x40007000\0" \
 	"ramdiskaddr=0x48000000\0" \
-	"console=ttySAC2,115200n8\0" \
+	"console=ttySAC0,115200n8\0" \
 	"mmcdev=0\0" \
 	"bootenv=uEnv.txt\0" \
 	"loadbootenv=load mmc ${mmcdev} ${loadaddr} ${bootenv}\0" \
@@ -92,7 +101,7 @@
 #define CONFIG_SYS_MMC_ENV_DEV		0
 #define CONFIG_ENV_SIZE			(16 << 10)	/* 16 KB */
 #define RESERVE_BLOCK_SIZE		(512)
-#define BL1_SIZE			(16 << 10) /*16 K reserved for BL1*/
+#define BL1_SIZE			(8 << 10) /*8 K reserved for BL1*/
 #define CONFIG_ENV_OFFSET		(RESERVE_BLOCK_SIZE + BL1_SIZE)
 
 #define CONFIG_SPL_MAX_FOOTPRINT	(14 * 1024)
