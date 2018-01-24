@@ -1,5 +1,5 @@
 TINY4412 BOARD
-M:	Chander Diablo <fs000x@gmail.com>
+M:	Diablo Fan <fs000x@gmail.com>
 S:	Maintained
 F:	board/samsung/tiny4412/
 F:	include/configs/tiny4412.h
