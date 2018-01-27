@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 	if (read(ifd, buffer + SPL_HEADER_SIZE, count) != count) {
     */
     count = (len < CHECKSUM_OFFSET)?len:CHECKSUM_OFFSET;
-    if (read(ifd, buffer, count) != cont) {
+    if (read(ifd, buffer, count) != count) {
 		fprintf(stderr, "%s: Can't read %s: %s\n",
 			argv[0], argv[1], strerror(errno));
 

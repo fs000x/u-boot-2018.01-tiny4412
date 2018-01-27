@@ -16,7 +16,7 @@
 
 	chosen {
 		stdout-path = "serial0";
-	}
+	};
 
 	aliases {
 		serial0 = "/serial@13800000";
