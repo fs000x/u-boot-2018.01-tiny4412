@@ -364,7 +364,7 @@ led_on_1:
 
 
 	.globl led_on_2
-led_on_1:
+led_on_2:
 	ldr r0, =0x110002E4	@GPM4DAT address
 	ldr r1, [r0]
 	bic r1, r1, #0x02	@GPM4_1 is LED_2
@@ -374,7 +374,7 @@ led_on_1:
 
 
 	.globl led_on_3
-led_on_1:
+led_on_3:
 	ldr r0, =0x110002E4	@GPM4DAT address
 	ldr r1, [r0]
 	bic r1, r1, #0x04	@GPM4_2 is LED_3
@@ -384,7 +384,7 @@ led_on_1:
 
 
 	.globl led_on_4
-led_on_1:
+led_on_4:
 	ldr r0, =0x110002E4	@GPM4DAT address
 	ldr r1, [r0]
 	bic r1, r1, #0x08	@GPM4_3 is LED_4
