@@ -61,6 +61,9 @@ switch_to_hypervisor_ret:
 	orrne	r0, r0, #0x13		@ set SVC mode
 	orr	r0, r0, #0xc0		@ disable FIQ and IRQ
 	msr	cpsr,r0
+	bl led_config
+	bl led_off_all
+	bl led_on_1
 
 /*
  * Setup vector:
@@ -325,3 +328,81 @@ ENTRY(cpu_init_crit)
 	b	lowlevel_init		@ go setup pll,mux,memory
 ENDPROC(cpu_init_crit)
 #endif
+
+
+	.globl led_config
+led_config:
+	ldr r0, =0x110002E0	@GPM4CON address
+	ldr r1, [r0]		@read data from address
+	bic r1, r1, #0xFF00	@clear high 8 bit
+	bic r1, r1, #0x00FF	@clear low 8 bit
+	orr r1, r1, #0x1100	@config high 8 bit to output mode
+	orr r1, r1, #0x0011	@config low 8 bit to input mode
+	str r1, [r0]
+
+	bx lr			@return
+
+
+	.globl led_off_all
+led_off_all:
+	ldr r0, =0x110002E4	@GPM4DAT address
+	ldr r1, [r0]
+	orr r1, r1, #0x0F	@GPM4_0/1/2/3 is LED_1/2/3/4
+	str r1, [r0]
+
+	bx lr			@return
+
+
+	.globl led_on_1
+led_on_1:
+	ldr r0, =0x110002E4	@GPM4DAT address
+	ldr r1, [r0]
+	bic r1, r1, #0x01	@GPM4_0 is LED_1
+	str r1, [r0]
+
+	bx lr			@return
+
+
+	.globl led_on_2
+led_on_1:
+	ldr r0, =0x110002E4	@GPM4DAT address
+	ldr r1, [r0]
+	bic r1, r1, #0x02	@GPM4_1 is LED_2
+	str r1, [r0]
+
+	bx lr			@return
+
+
+	.globl led_on_3
+led_on_1:
+	ldr r0, =0x110002E4	@GPM4DAT address
+	ldr r1, [r0]
+	bic r1, r1, #0x04	@GPM4_2 is LED_3
+	str r1, [r0]
+
+	bx lr			@return
+
+
+	.globl led_on_4
+led_on_1:
+	ldr r0, =0x110002E4	@GPM4DAT address
+	ldr r1, [r0]
+	bic r1, r1, #0x08	@GPM4_3 is LED_4
+	str r1, [r0]
+
+	bx lr			@return
+
+
+	.globl bsp_delay
+bsp_delay:
+	ldr r0, =0x8FFFFF
+
+
+loop:
+	sub r0, r0, #0x01
+	cmp r0, #0x00
+	bne loop
+
+	bx lr
+
+
