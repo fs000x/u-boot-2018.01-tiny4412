@@ -167,7 +167,8 @@ static void secondary_cores_configure(void)
 
 extern void relocate_wait_code(void);
 #endif
-
+void led_off_all(void);
+void led_on_2(void);
 int do_lowlevel_init(void)
 {
 	uint32_t reset_status;
@@ -214,6 +215,8 @@ int do_lowlevel_init(void)
 		set_ps_hold_ctrl();
 
 	if (actions & DO_CLOCKS) {
+		led_off_all();
+		led_on_2();
 		system_clock_init();
 #ifdef CONFIG_DEBUG_UART
 #if (defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_SERIAL_SUPPORT)) || \

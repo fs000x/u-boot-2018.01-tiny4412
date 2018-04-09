@@ -283,20 +283,32 @@ static void setup_global_data(gd_t *gdp)
 	gd->have_console = 1;
 }
 
+void led_off_all(void);
+void led_on_1(void);
+void led_on_2(void);
+void led_on_3(void);
+void led_on_4(void);
 void board_init_f(unsigned long bootflag)
 {
 	__aligned(8) gd_t local_gd;
 	__attribute__((noreturn)) void (*uboot)(void);
 
 	setup_global_data(&local_gd);
+	led_off_all();
+	led_on_3();
 
 	if (do_lowlevel_init())
 		power_exit_wakeup();
 
+	led_off_all();
+	led_on_4();
 	copy_uboot_to_ram();
 
 	/* Jump to U-Boot image */
 	uboot = (void *)CONFIG_SYS_TEXT_BASE;
+	led_on_3();
+	led_on_2();
+	led_on_1();
 	(*uboot)();
 	/* Never returns Here */
 }
