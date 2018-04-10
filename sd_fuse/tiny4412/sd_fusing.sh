@@ -74,6 +74,7 @@ dd iflag=dsync oflag=dsync if=./E4412_N.bl1.bin of=$1 seek=$signed_bl1_position
 echo "---------------------------------------"
 echo "BL2 fusing"
 #dd iflag=dsync oflag=dsync if=./bl2.bin of=$1 seek=$bl2_position
+#dd iflag=dsync oflag=dsync if=/home/dell/tmp/tiny4412-spl.bin of=$1 seek=$bl2_position
 dd iflag=dsync oflag=dsync if=../../spl/tiny4412-spl.bin of=$1 seek=$bl2_position
 
 #<u-boot fusing>

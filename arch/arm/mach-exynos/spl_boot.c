@@ -214,6 +214,9 @@ void copy_uboot_to_ram(void)
 	if (bootmode == BOOT_MODE_OM)
 		bootmode = get_boot_mode();
 
+	led_off_all();
+	led_on_1();
+	
 	switch (bootmode) {
 #ifdef CONFIG_SPI_BOOTING
 	case BOOT_MODE_SERIAL:
@@ -222,6 +225,7 @@ void copy_uboot_to_ram(void)
 		break;
 #endif
 	case BOOT_MODE_SD:
+		led_on_4();
 		offset = BL2_START_OFFSET;
 		size = BL2_SIZE_BLOC_COUNT;
 		copy_bl2 = get_irom_func(MMC_INDEX);
@@ -254,6 +258,7 @@ void copy_uboot_to_ram(void)
 		break;
 	}
 
+	led_on_2();
 	if (copy_bl2)
 		copy_bl2(offset, size, CONFIG_SYS_TEXT_BASE);
 }
@@ -306,9 +311,6 @@ void board_init_f(unsigned long bootflag)
 
 	/* Jump to U-Boot image */
 	uboot = (void *)CONFIG_SYS_TEXT_BASE;
-	led_on_3();
-	led_on_2();
-	led_on_1();
 	(*uboot)();
 	/* Never returns Here */
 }

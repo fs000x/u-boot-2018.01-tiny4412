@@ -657,6 +657,9 @@ static int run_main_loop(void)
 #ifdef CONFIG_SANDBOX
 	sandbox_main_loop_init();
 #endif
+	led_off_all();
+	led_on_1();
+	led_on_4();
 	/* main_loop() can return to retry autoboot, if so just run it again */
 	for (;;)
 		main_loop();

@@ -221,4 +221,10 @@ int board_run_command(const char *cmdline);
 	U_BOOT_CMD_MKENT_COMPLETE(_name, _maxargs, _rep, _cmd,		\
 					_usage, _help, NULL)
 
+
+void led_off_all(void);
+void led_on_1(void);
+void led_on_2(void);
+void led_on_3(void);
+void led_on_4(void);
 #endif	/* __COMMAND_H */

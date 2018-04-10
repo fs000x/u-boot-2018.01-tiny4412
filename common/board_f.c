@@ -887,9 +887,14 @@ void board_init_f(ulong boot_flags)
 {
 	gd->flags = boot_flags;
 	gd->have_console = 0;
+	led_off_all();
+	led_on_1();
 
 	if (initcall_run_list(init_sequence_f))
 		hang();
+
+	led_off_all();
+	led_on_2();
 
 #if !defined(CONFIG_ARM) && !defined(CONFIG_SANDBOX) && \
 		!defined(CONFIG_EFI_APP) && !CONFIG_IS_ENABLED(X86_64)

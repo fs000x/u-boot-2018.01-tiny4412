@@ -70,6 +70,9 @@ ENTRY(_main)
  * Set up initial C runtime environment and call board_init_f(0).
  */
 
+	bl led_off_all
+	bl led_on_3
+	bl led_on_2
 #if defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_STACK)
 	ldr	r0, =(CONFIG_SPL_STACK)
 #else
