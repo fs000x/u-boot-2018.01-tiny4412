@@ -883,10 +883,18 @@ static const init_fnc_t init_sequence_f[] = {
 	NULL,
 };
 
+void led_off_all(void);
+void led_on_1(void);
+void led_on_2(void);
+void led_on_3(void);
+void led_on_4(void);
 void board_init_f(ulong boot_flags)
 {
 	gd->flags = boot_flags;
 	gd->have_console = 0;
+
+	led_on_4();
+	led_on_3();
 
 	if (initcall_run_list(init_sequence_f))
 		hang();

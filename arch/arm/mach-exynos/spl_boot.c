@@ -253,9 +253,58 @@ void copy_uboot_to_ram(void)
 	default:
 		break;
 	}
+	printascii("copy_bl2: ");
+	printhex8(copy_bl2);
+	printascii("\n");
+	printascii("CONFIG_SYS_TEXT_BASE: ");
+	printhex8(CONFIG_SYS_TEXT_BASE);
+	printascii("\n");
+	printhex8(*(u32 *)0x02020030);
+	printascii("\n");
 
+#ifdef CONFIG_TINY4412
+    if (copy_bl2)
+    {
+        /*
+         * Here I use iram 0x020250000-0x020260000 (64k)
+         * as an buffer, and copy u-boot from sd card to 
+         * this buffer, then copy it to dram started 
+         * from 0x43e00000.
+         *
+         */
+        unsigned int i, count = 0;
+        unsigned char *buffer = (unsigned char *)0x02050000;
+        unsigned char *dst = (unsigned char *)CONFIG_SYS_TEXT_BASE;
+        unsigned int step = (0x10000 / 512);
+
+        for (count = 0; count < BL2_SIZE_BLOC_COUNT; count+=step) {
+            /* copy u-boot from sdcard to iram firstly.  */
+            copy_bl2((u32)(BL2_START_OFFSET+count), (u32)step, (u32)buffer);
+            /* then copy u-boot from iram to dram. */
+            for (i=0; i<0x10000; i++) {
+                *dst++ = buffer[i];
+            }
+        }
+    }
+#else
 	if (copy_bl2)
 		copy_bl2(offset, size, CONFIG_SYS_TEXT_BASE);
+#endif
+
+	{
+		char *tb = CONFIG_SYS_TEXT_BASE;
+		int i = 0;
+		printascii("addrval: [");
+		for(; i < 320; i++)
+		{
+			printhex2(tb[i]);
+			if (i % 16 == 0)
+				printascii("\n");
+			else
+				printascii(" ");
+		}
+		printascii("\n]\n");
+	}
 }
 
 void memzero(void *s, size_t n)
