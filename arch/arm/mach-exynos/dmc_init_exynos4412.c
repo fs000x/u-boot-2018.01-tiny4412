@@ -214,7 +214,7 @@ void mem_ctrl_init(int reset)
 #endif
 	
 #ifdef CONFIG_DEBUG_UART	
-	printascii("[SPL] DDR3 SDRAM配置：\n");
+	printascii("[SPL] DDR3 SDRAM config:\n");
 	printascii("timingref   ");  printhex8(mem.timingref); 		printascii("\n");
 	printascii("timingrow   ");  printhex8(mem.timingrow); 		printascii("\n");
 	printascii("timingdata  ");  printhex8(mem.timingdata); 	printascii("\n");
@@ -243,7 +243,7 @@ void mem_ctrl_init(int reset)
 
 #ifdef CONFIG_DEBUG_UART	
 {
-	printascii("[SPL] DDR3 SDRAM测试：\n");
+	printascii("[SPL] DDR3 SDRAM test:\n");
 	
 	void Test_SDRAM(unsigned long addr, unsigned long value);
 	Test_SDRAM(0x40000000, 0x12121212);
@@ -266,7 +266,7 @@ void mem_ctrl_init(int reset)
 	Test_SDRAM(0x70000000, 0x78787878);
 	Test_SDRAM(0x7FFFFFFC, 0x89898989);
 	
-	printascii("测试结束\n");
+	printascii("test end\n");
 }	
 #endif
 
@@ -275,14 +275,14 @@ void mem_ctrl_init(int reset)
 void Test_SDRAM(unsigned long addr, unsigned long value)
 {
 	
-	printascii("写入地址 = ");
+	printascii("addr = ");
 	printhex8(addr);
 	
-	printascii("  写入值 = ");
+	printascii(",val_w = ");
 	printhex8(value);
 	writel(value, addr);
 	
-	printascii("  读取值 = ");
+	printascii(",val_r = ");
 	printhex8(readl(addr));
 	printascii("\n");
 }
