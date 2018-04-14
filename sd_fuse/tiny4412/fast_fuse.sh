@@ -55,7 +55,7 @@ if [ ! -f ${MKBL2} ]; then
 fi
 
 #<make bl2>
-${MKBL2} ${E4412_UBOOT} bl2.bin 14336
+#${MKBL2} ${E4412_UBOOT} bl2.bin 14336
 
 ####################################
 # fusing images
@@ -66,7 +66,7 @@ uboot_position=49
 #<BL2 fusing>
 echo "---------------------------------------"
 echo "BL2 fusing"
-dd iflag=dsync oflag=dsync if=./bl2.bin of=$1 seek=$bl2_position
+dd iflag=dsync oflag=dsync if=../../spl/tiny4412-spl.bin of=$1 seek=$bl2_position
 
 #<u-boot fusing>
 echo "---------------------------------------"
