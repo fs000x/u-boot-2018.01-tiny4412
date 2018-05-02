@@ -361,12 +361,12 @@ void system_clock_init(void)
            DCC_ENB(1) | BYPASS(1) |RESV0(1) | RESV1(1);
    set = AFC(0) | LOCK_CON_DLY(8) | LOCK_CON_IN(3) |
            LOCK_CON_OUT(0) |FEED_EN(0)| AFC_ENB(0) |
-           DCC_ENB(0) | BYPASS(0) |RESV0(1) | RESV1(0);
+           DCC_ENB(1) | BYPASS(0) |RESV0(0) | RESV1(0);
    clrsetbits_le32(&clk->apll_con1, clr, set);
 
    /*APLL_CON0*/
    clr_pll_con0 = SDIV(7) | PDIV(63) | MDIV(1023) | FSEL(1);
-   set = SDIV(0) | PDIV(3) | MDIV(175) | FSEL(0) | PLL_ENABLE(1);
+   set = SDIV(1) | PDIV(3) | MDIV(100) | FSEL(0) | PLL_ENABLE(1);
    clrsetbits_le32(&clk->apll_con0, clr_pll_con0, set);
 
    /* Wait for PLL to be locked */
@@ -381,7 +381,7 @@ void system_clock_init(void)
            DCC_ENB(1) | BYPASS(1) |RESV0(1) | RESV1(1);
    set = AFC(0) | LOCK_CON_DLY(8) | LOCK_CON_IN(3) |
            LOCK_CON_OUT(0) |FEED_EN(0)| AFC_ENB(0) |
-           DCC_ENB(0) | BYPASS(0) |RESV0(1) | RESV1(0);
+           DCC_ENB(1) | BYPASS(0) |RESV0(0) | RESV1(0);
    clrsetbits_le32(&clk->mpll_con1, clr, set);
 
    /*MPLL_CON0*/
@@ -397,13 +397,13 @@ void system_clock_init(void)
    /*EPLL_CON2*/
    clr = BYPASS_E_V(1) | SSCG_EN(1) |
            AFC_ENB_E_V(1) |DCC_ENB_E_V(1) ;
-   set = BYPASS_E_V(1) | SSCG_EN(1) |
-           AFC_ENB_E_V(1) |DCC_ENB_E_V(1) ;
+   set = BYPASS_E_V(0) | SSCG_EN(0) |
+           AFC_ENB_E_V(0) |DCC_ENB_E_V(1) ;
    clrsetbits_le32(&clk->epll_con2, clr, set);
 
    /*EPLL_CON1*/
    clr = K(65535) | MFR(255) | MRR(31) | SEL_PF(3);
-   set = K(0) | MFR(1) | MRR(6) | SEL_PF(3);
+   set = K(0) | MFR(1) | MRR(6) | SEL_PF(3);// 3 << 29
    clrsetbits_le32(&clk->epll_con1, clr, set);
 
    /*EPLL_CON0*/
@@ -419,17 +419,17 @@ void system_clock_init(void)
    /*VPLL_CON2*/
    clr = BYPASS_E_V(1) | SSCG_EN(1) |
            AFC_ENB_E_V(1) |DCC_ENB_E_V(1) ;
-   set = BYPASS_E_V(1) | SSCG_EN(1) |
-           AFC_ENB_E_V(1) |DCC_ENB_E_V(1) ;
+   set = BYPASS_E_V(0) | SSCG_EN(0) |
+           AFC_ENB_E_V(0) |DCC_ENB_E_V(1) ;
    clrsetbits_le32(&clk->vpll_con2, clr, set);
 
    /*VPLL_CON1*/
    clr = K(65535) | MFR(255) | MRR(31) | SEL_PF(3);
-   set = K(0) | MFR(1) | MRR(6) | SEL_PF(3);
+   set = K(0) | MFR(0) | MRR(0) | SEL_PF(3);//3 << 29
    clrsetbits_le32(&clk->vpll_con1, clr, set);
 
    /*VPLL_CON0*/
-   set = SDIV(3) | PDIV(2) | MDIV(72) | PLL_ENABLE(1);
+   set = SDIV(3) | PDIV(3) | MDIV(160) | PLL_ENABLE(1);
    clrsetbits_le32(&clk->vpll_con0, clr_pll_con0, set);
 
    /* Wait for PLL to be locked */

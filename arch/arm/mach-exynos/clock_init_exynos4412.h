@@ -32,7 +32,7 @@
 #define K(x)                 ((x) & 0xffff)
 #define MFR(x)        (((x) & 0xff) << 16)
 #define MRR(x)        (((x) & 0x1f) << 24)
-#define SEL_PF(x)        (((x) & 0x3) << 9)
+#define SEL_PF(x)        (((x) & 0x3) << 29)
 
 /* E/V PLL_CON2 */
 #define ICP_BOOST(x)    ((x) & 0x3)
