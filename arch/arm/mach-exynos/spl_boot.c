@@ -15,6 +15,7 @@
 #include <asm/arch/power.h>
 #include <asm/arch/spl.h>
 #include <asm/arch/spi.h>
+#include <debug_uart.h>
 
 #include "common_setup.h"
 #include "clock_init.h"
@@ -254,7 +255,7 @@ void copy_uboot_to_ram(void)
 		break;
 	}
 	printascii("copy_bl2: ");
-	printhex8(copy_bl2);
+	printhex8((u32)copy_bl2);
 	printascii("\n");
 	printascii("CONFIG_SYS_TEXT_BASE: ");
 	printhex8(CONFIG_SYS_TEXT_BASE);
@@ -276,10 +277,12 @@ void copy_uboot_to_ram(void)
         unsigned char *buffer = (unsigned char *)0x02050000;
         unsigned char *dst = (unsigned char *)CONFIG_SYS_TEXT_BASE;
         unsigned int step = (0x10000 / 512);
+        offset = BL2_START_OFFSET;
+        size = BL2_SIZE_BLOC_COUNT;
 
-        for (count = 0; count < BL2_SIZE_BLOC_COUNT; count+=step) {
+        for (count = 0; count < size; count+=step) {
             /* copy u-boot from sdcard to iram firstly.  */
-            copy_bl2((u32)(BL2_START_OFFSET+count), (u32)step, (u32)buffer);
+            copy_bl2((u32)(offset+count), (u32)step, (u32)buffer);
             /* then copy u-boot from iram to dram. */
             for (i=0; i<0x10000; i++) {
                 *dst++ = buffer[i];
@@ -292,7 +295,7 @@ void copy_uboot_to_ram(void)
 #endif
 
 	{
-		char *tb = CONFIG_SYS_TEXT_BASE;
+		unsigned char *tb = (unsigned char *)CONFIG_SYS_TEXT_BASE;
 		int i = 0;
 		printascii("addrval: [");
 		for(; i < 320; i++)
