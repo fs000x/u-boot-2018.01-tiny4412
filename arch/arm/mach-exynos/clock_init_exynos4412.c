@@ -497,7 +497,7 @@ void system_clock_init(void)
            MUX_ACLK_266_GPS_SEL(1) | MUX_ACLK_266_GPS_SUB_SEL(1);
 
    set = MUX_MPLL_USER_SEL_T(1) | MUX_ACLK_400_MCUISP_SEL(0) |
-           MUX_ACLK_400_MCUISP_SUB_SEL(1) | MUX_ACLK_200_SUB_SEL(1) |
+           MUX_ACLK_400_MCUISP_SUB_SEL(0) | MUX_ACLK_200_SUB_SEL(0) |
            MUX_ACLK_266_GPS_SEL(0) | MUX_ACLK_266_GPS_SUB_SEL(1);
    clrsetbits_le32(&clk->src_top1, clr, set);
 
@@ -522,7 +522,7 @@ void system_clock_init(void)
              MUX_PWI_SEL(15) | MUX_G2D_ACP0_SEL(1) |
              MUX_G2D_ACP1_SEL(1) | MUX_G2D_ACP_SEL(1);
    set = MUX_MPLL_SEL(1) | MUX_C2C_SEL(0) | MUX_DMC_BUS_SEL(0) |
-           MUX_DPHY_SEL(0) | MUX_PWI_SEL(6) |
+           MUX_DPHY_SEL(0) | MUX_PWI_SEL(1) |
            MUX_G2D_ACP0_SEL(0) | MUX_G2D_ACP1_SEL(0) | MUX_G2D_ACP_SEL(0);
    clrsetbits_le32(&clk->src_dmc, clr_src_dmc, set);
 
