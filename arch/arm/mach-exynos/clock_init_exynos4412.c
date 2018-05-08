@@ -119,9 +119,9 @@ void system_clock_init(void)
    clr = APLL_RATIO(7) |CORE_RATIO(7)| CORE2_RATIO(7)|
            COREM0_RATIO(7) | COREM1_RATIO(7) |
          PERIPH_RATIO(7) | ATB_RATIO(7) | PCLK_DBG_RATIO(7) ;
-   set = APLL_RATIO(1) |CORE_RATIO(0) | CORE2_RATIO(0) |
-           COREM0_RATIO(2) | COREM1_RATIO(4)|
-         PERIPH_RATIO(0) | ATB_RATIO(2) | PCLK_DBG_RATIO(1) ;
+   set = APLL_RATIO(2) |CORE_RATIO(0) | CORE2_RATIO(0) |
+           COREM0_RATIO(3) | COREM1_RATIO(7)|
+         PERIPH_RATIO(7) | ATB_RATIO(6) | PCLK_DBG_RATIO(1) ;
    clrsetbits_le32(&clk->div_cpu0, clr, set);
 
    /* Wait for divider ready status */
@@ -332,19 +332,19 @@ void system_clock_init(void)
    clr = PLL_LOCKTIME(65535);
 
    /*====== APLL locktime [APLL = 1400MHz :  SDIV(0) , PDIV(3) , MDIV(175)] =====*/
-   set = PLL_LOCKTIME( PDIV(3) * 270 );// 2EE = 750
+   set = PLL_LOCKTIME( PDIV(3) * 270 );// 0x2EE = 750
    clrsetbits_le32(&clk->apll_lock, clr, set);
 
    /*====== MPLL locktime [MPLL = 800MHz  :  SDIV(0) , PDIV(3) , MDIV(100)] =====*/
-   set = PLL_LOCKTIME( PDIV(3) * 270 );// 32A = 810
+   set = PLL_LOCKTIME( PDIV(3) * 270 );// 0x32A = 810
    clrsetbits_le32(&clk->mpll_lock, clr, set);
 
    /*====== EPLL locktime [EPLL = 96MHz   :  SDIV(3) , PDIV(2) , MDIV(64)] =====*/
-   set = PLL_LOCKTIME( PDIV(2) * 3000 );// 1770 = 6000
+   set = PLL_LOCKTIME( PDIV(2) * 3000 );// 0x1770 = 6000
    clrsetbits_le32(&clk->epll_lock, clr, set);
 
    /*====== VPLL locktime [VPLL = 108MHz  :  SDIV(3) , PDIV(2) , MDIV(72)] =====*/
-   set = PLL_LOCKTIME( PDIV(2) * 3000 );// 2328 = 9000
+   set = PLL_LOCKTIME( PDIV(2) * 3000 );// 0x1770 = 9000
    clrsetbits_le32(&clk->vpll_lock, clr, set);
 
 
@@ -403,7 +403,7 @@ void system_clock_init(void)
 
    /*EPLL_CON1*/
    clr = K(65535) | MFR(255) | MRR(31) | SEL_PF(3);
-   set = K(0) | MFR(1) | MRR(6) | SEL_PF(3);// 3 << 29
+   set = K(0) | MFR(1) | MRR(6) | SEL_PF(3); // 3 << 29
    clrsetbits_le32(&clk->epll_con1, clr, set);
 
    /*EPLL_CON0*/
@@ -425,11 +425,11 @@ void system_clock_init(void)
 
    /*VPLL_CON1*/
    clr = K(65535) | MFR(255) | MRR(31) | SEL_PF(3);
-   set = K(0) | MFR(0) | MRR(0) | SEL_PF(3);//3 << 29
+   set = K(0) | MFR(1) | MRR(6) | SEL_PF(3); // 3 << 29
    clrsetbits_le32(&clk->vpll_con1, clr, set);
 
    /*VPLL_CON0*/
-   set = SDIV(3) | PDIV(3) | MDIV(160) | PLL_ENABLE(1);
+   set = SDIV(3) | PDIV(2) | MDIV(72) | PLL_ENABLE(1);
    clrsetbits_le32(&clk->vpll_con0, clr_pll_con0, set);
 
    /* Wait for PLL to be locked */
@@ -497,7 +497,7 @@ void system_clock_init(void)
            MUX_ACLK_266_GPS_SEL(1) | MUX_ACLK_266_GPS_SUB_SEL(1);
 
    set = MUX_MPLL_USER_SEL_T(1) | MUX_ACLK_400_MCUISP_SEL(0) |
-           MUX_ACLK_400_MCUISP_SUB_SEL(0) | MUX_ACLK_200_SUB_SEL(0) |
+           MUX_ACLK_400_MCUISP_SUB_SEL(1) | MUX_ACLK_200_SUB_SEL(1) |
            MUX_ACLK_266_GPS_SEL(0) | MUX_ACLK_266_GPS_SUB_SEL(1);
    clrsetbits_le32(&clk->src_top1, clr, set);
 
