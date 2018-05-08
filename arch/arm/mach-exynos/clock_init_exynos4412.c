@@ -135,7 +135,7 @@ void system_clock_init(void)
         * ACLK_CORES = ARMCLK / (CORES_RATIO + 1) = 233 (DIVcores:CORES_RATIO=5)
         */
    clr = COPY_RATIO(7) | HPM_RATIO(7) | CORES_RATIO(7);
-   set = COPY_RATIO(3) | HPM_RATIO(0) | CORES_RATIO(1);
+   set = COPY_RATIO(6) | HPM_RATIO(0) | CORES_RATIO(5);
    clrsetbits_le32(&clk->div_cpu1, clr, set);
 
    /* Wait for divider ready status */
@@ -184,8 +184,8 @@ void system_clock_init(void)
         */
    clr = C2C_RATIO(7) | C2C_ACLK_RATIO(7) | PWI_RATIO(15) |
                G2D_ACP_RATIO(15) | DVSEM_RATIO(127) | DPM_RATIO(127);
-   set = C2C_RATIO(1) | C2C_ACLK_RATIO(1) | PWI_RATIO(15) |
-               G2D_ACP_RATIO(3) | DVSEM_RATIO(1) | DPM_RATIO(1);
+   set = C2C_RATIO(1) | C2C_ACLK_RATIO(1) | PWI_RATIO(7) |
+               G2D_ACP_RATIO(3) | DVSEM_RATIO(7) | DPM_RATIO(7);
    clrsetbits_le32(&clk->div_dmc1, clr, set);
 
    /* Wait for divider ready status */
@@ -280,8 +280,8 @@ void system_clock_init(void)
         * DOUTmmc0 = MOUTmmc0 / (ratio + 1) = 100 (7)
         * sclk_mmc0 = DOUTmmc0 / (ratio + 1) = 50 (1)
        */
-   set = MMC0_RATIO(7) | MMC0_PRE_RATIO(0) | MMC1_RATIO(7) |
-             MMC1_PRE_RATIO(0);
+   set = MMC0_RATIO(1) | MMC0_PRE_RATIO(9) | MMC1_RATIO(1) |
+             MMC1_PRE_RATIO(9);
 
    clrsetbits_le32(&clk->div_fsys1, clr, set);
 
@@ -300,8 +300,8 @@ void system_clock_init(void)
         * DOUTmmc2 = MOUTmmc2 / (ratio + 1) = 100 (7)
         * sclk_mmc2 = DOUTmmc2 / (ratio + 1) = 20 (4)
        */
-   set = MMC2_RATIO(7) | MMC2_PRE_RATIO(9) | MMC3_RATIO(7) |
-             MMC3_PRE_RATIO(9);
+   set = MMC2_RATIO(15) | MMC2_PRE_RATIO(0) | MMC3_RATIO(0) |
+             MMC3_PRE_RATIO(0);
 
    clrsetbits_le32(&clk->div_fsys2, clr, set);
 
@@ -317,7 +317,7 @@ void system_clock_init(void)
         * DOUTmmc4 = MOUTmmc4 / (ratio + 1) = 100 (7)
         * sclk_mmc4 = DOUTmmc4 / (ratio + 1) = 100 (0)
        */
-   set = MMC4_RATIO(1) | MMC4_PRE_RATIO(0);
+   set = MMC4_RATIO(0) | MMC4_PRE_RATIO(1);
 
    clrsetbits_le32(&clk->div_fsys3, clr, set);
 
@@ -332,11 +332,11 @@ void system_clock_init(void)
    clr = PLL_LOCKTIME(65535);
 
    /*====== APLL locktime [APLL = 1400MHz :  SDIV(0) , PDIV(3) , MDIV(175)] =====*/
-   set = PLL_LOCKTIME( PDIV(3) * 270 );// 0x2EE = 750
+   set = PLL_LOCKTIME( PDIV(3) * 270 );// 0x32A = 810
    clrsetbits_le32(&clk->apll_lock, clr, set);
 
    /*====== MPLL locktime [MPLL = 800MHz  :  SDIV(0) , PDIV(3) , MDIV(100)] =====*/
-   set = PLL_LOCKTIME( PDIV(3) * 270 );// 0x32A = 810
+   set = PLL_LOCKTIME( PDIV(3) * 270 );// 0x960 = 2400
    clrsetbits_le32(&clk->mpll_lock, clr, set);
 
    /*====== EPLL locktime [EPLL = 96MHz   :  SDIV(3) , PDIV(2) , MDIV(64)] =====*/
@@ -344,7 +344,7 @@ void system_clock_init(void)
    clrsetbits_le32(&clk->epll_lock, clr, set);
 
    /*====== VPLL locktime [VPLL = 108MHz  :  SDIV(3) , PDIV(2) , MDIV(72)] =====*/
-   set = PLL_LOCKTIME( PDIV(2) * 3000 );// 0x1770 = 9000
+   set = PLL_LOCKTIME( PDIV(2) * 3000 );// 0x1770 = 6000
    clrsetbits_le32(&clk->vpll_lock, clr, set);
 
 
@@ -361,12 +361,12 @@ void system_clock_init(void)
            DCC_ENB(1) | BYPASS(1) |RESV0(1) | RESV1(1);
    set = AFC(0) | LOCK_CON_DLY(8) | LOCK_CON_IN(3) |
            LOCK_CON_OUT(0) |FEED_EN(0)| AFC_ENB(0) |
-           DCC_ENB(1) | BYPASS(0) |RESV0(0) | RESV1(0);
+           DCC_ENB(0) | BYPASS(0) |RESV0(1) | RESV1(0);
    clrsetbits_le32(&clk->apll_con1, clr, set);
 
    /*APLL_CON0*/
    clr_pll_con0 = SDIV(7) | PDIV(63) | MDIV(1023) | FSEL(1);
-   set = SDIV(1) | PDIV(3) | MDIV(100) | FSEL(0) | PLL_ENABLE(1);
+   set = SDIV(0) | PDIV(3) | MDIV(175) | FSEL(0) | PLL_ENABLE(1);
    clrsetbits_le32(&clk->apll_con0, clr_pll_con0, set);
 
    /* Wait for PLL to be locked */
@@ -381,7 +381,7 @@ void system_clock_init(void)
            DCC_ENB(1) | BYPASS(1) |RESV0(1) | RESV1(1);
    set = AFC(0) | LOCK_CON_DLY(8) | LOCK_CON_IN(3) |
            LOCK_CON_OUT(0) |FEED_EN(0)| AFC_ENB(0) |
-           DCC_ENB(1) | BYPASS(0) |RESV0(0) | RESV1(0);
+           DCC_ENB(0) | BYPASS(0) |RESV0(1) | RESV1(0);
    clrsetbits_le32(&clk->mpll_con1, clr, set);
 
    /*MPLL_CON0*/
