@@ -332,19 +332,19 @@ void system_clock_init(void)
    clr = PLL_LOCKTIME(65535);
 
    /*====== APLL locktime [APLL = 1400MHz :  SDIV(0) , PDIV(3) , MDIV(175)] =====*/
-   set = PLL_LOCKTIME( PDIV(3) * 270 );// 0x32A = 810
+   set = PLL_LOCKTIME( /*APDIV*/(3) * 270 );// 0x32A = 810
    clrsetbits_le32(&clk->apll_lock, clr, set);
 
    /*====== MPLL locktime [MPLL = 800MHz  :  SDIV(0) , PDIV(3) , MDIV(100)] =====*/
-   set = PLL_LOCKTIME( PDIV(3) * 270 );// 0x960 = 2400
-   clrsetbits_le32(&clk->mpll_lock, clr, set);
+   set = PLL_LOCKTIME( /*MPDIV*/(3) * 270 );// 0x32A = 810
+   clrsetbits_le32(0x10044008/*&clk->mpll_lock*/, clr, set);
 
    /*====== EPLL locktime [EPLL = 96MHz   :  SDIV(3) , PDIV(2) , MDIV(64)] =====*/
-   set = PLL_LOCKTIME( PDIV(2) * 3000 );// 0x1770 = 6000
+   set = PLL_LOCKTIME( /*EPDIV*/(2) * 3000 );// 0x1770 = 6000
    clrsetbits_le32(&clk->epll_lock, clr, set);
 
    /*====== VPLL locktime [VPLL = 108MHz  :  SDIV(3) , PDIV(2) , MDIV(72)] =====*/
-   set = PLL_LOCKTIME( PDIV(2) * 3000 );// 0x1770 = 6000
+   set = PLL_LOCKTIME( /*VPDIV*/(2) * 3000 );// 0x1770 = 6000
    clrsetbits_le32(&clk->vpll_lock, clr, set);
 
 
