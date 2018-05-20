@@ -15,6 +15,7 @@
 #define CONFIG_EXYNOS4412		1	/* which is a EXYNOS4412 SoC */
 #define CONFIG_TINY4412			1	/* working with TINY4412*/
 
+#ifdef CONFIG_SPL_BUILD
 /* DEBUG UART */
 #define CONFIG_DEBUG_UART           1
 #define CONFIG_SPL_SERIAL_SUPPORT   1
@@ -23,6 +24,10 @@
 #define CONFIG_DEBUG_UART_BASE      0x13800000
 #define CONFIG_DEBUG_UART_CLOCK     (100000000)
 /* END DEBUG UART */
+#else
+#define DEBUG
+#define CONFIG_MMC_TRACE
+#endif /* CONFIG_SPL_BUILD */
 
 #define CONFIG_SYS_DCACHE_OFF		1
 
