@@ -76,6 +76,7 @@ static void s5p_sdhci_set_control_reg(struct sdhci_host *host)
 static void s5p_set_clock(struct sdhci_host *host, u32 div)
 {
 	/* ToDo : Use the Clock Framework */
+printf("+++++++++++++++++++ %s div %u +++++++++++++++++++++++++++++\n", __func__, div);
 	set_mmc_clk(host->index, div);
 }
 
@@ -97,8 +98,10 @@ static int s5p_sdhci_core_init(struct sdhci_host *host)
 
 	if (host->bus_width == 8)
 		host->host_caps |= MMC_MODE_8BIT;
+printf("+++++++++++++++++++ %s +++++++++++++++++++++++++++++\n", __func__);
 
 #ifndef CONFIG_BLK
+printf("+++++++++++++++++++ %s CONFIG_BLK +++++++++++++++++++++++++++++\n", __func__);
 	return add_sdhci(host, 0, 400000);
 #else
 	return 0;
@@ -115,6 +118,7 @@ int s5p_sdhci_init(u32 regbase, int index, int bus_width)
 	host->ioaddr = (void *)regbase;
 	host->index = index;
 	host->bus_width = bus_width;
+printf("+++++++++++++++++++ %s +++++++++++++++++++++++++++++\n", __func__);
 
 	return s5p_sdhci_core_init(host);
 }
@@ -246,7 +250,7 @@ static int s5p_sdhci_probe(struct udevice *dev)
 	struct mmc_uclass_priv *upriv = dev_get_uclass_priv(dev);
 	struct sdhci_host *host = dev_get_priv(dev);
 	int ret;
-
+printf("+++++++++++++++++++ %s +++++++++++++++++++++++++++++\n", __func__);
 	ret = sdhci_get_config(gd->fdt_blob, dev_of_offset(dev), host);
 	if (ret)
 		return ret;

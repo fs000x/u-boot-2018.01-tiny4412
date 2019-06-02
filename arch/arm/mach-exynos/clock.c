@@ -845,6 +845,7 @@ static void exynos4_set_mmc_clk(int dev_index, unsigned int div)
 	 * CLK_DIV_FSYS3
 	 * MMC4_RATIO [3:0]
 	 */
+	printf("%s: index %d, div %u\n", __func__, dev_index, div);
 	if (dev_index < 2) {
 		addr = (unsigned int)&clk->div_fsys1;
 		clear_bit = MASK_PRE_RATIO(dev_index);
@@ -861,7 +862,7 @@ static void exynos4_set_mmc_clk(int dev_index, unsigned int div)
 		clear_bit = MASK_PRE_RATIO(dev_index);
 		set_bit = SET_PRE_RATIO(dev_index, div);
 	}
-
+printf("%s: addr %08x, cl %08x, set %08x\n", __func__, addr, clear_bit, set_bit);
 	clrsetbits_le32(addr, clear_bit, set_bit);
 }
 

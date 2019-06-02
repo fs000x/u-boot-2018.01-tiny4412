@@ -116,6 +116,17 @@ void system_clock_init(void)
         * ATCLK        =   OUTatb = 200 MHz
         * PCLK_DBG     = OUTatb / (PCLK_DBG_RATIO + 1) = 100 MHz (PCLK_DBG_RATIO=1)
        */
+    /**
+        * MOUTcore = MOUTapll = 1400 MHz
+        * DIVCORE_OUT(DOUTCORE) = MOUTCORE/(CORE_RATIO + 1) = 1400 MHz (CORE_RATIO = 0)
+        * ACLK_COREM0 = ARMCLK/(COREM0_RATIO +1) = 350 MHz (COREM0_RATIO = 3)
+        * ACLK_COREM1 = ARMCLK/(COREM1_RATIO +1) = 188 MHz (COREM1_RATIO = 7.4468) (7*200, 6)(8*175, 7)
+        * PERIPHCLK = DOUTCORE/(PERIPH_RATIO + 1) = 1400 MHz (PERIPH_RATIO = 0)
+        * ATCLK = MOUTCORE/(ATB_RATIO + 1) = 214 MHz (ATB_RATIO = 6.542) (6*233, 5)(7*200, 6)
+        * PCLK_DBG = ATCLK/(PCLK_DBG_RATIO + 1) = 107 MHz (PCLK_DBG_RATIO = 1)
+        * SCLKAPLL = MOUTAPLL/(APLL_RATIO + 1) = 700 MHz (APLL_RATIO = 1)
+        * ARMCLK = DOUTCORE/(CORE2_RATIO + 1) = 1400 MHz (CORE2_RATIO = 0)
+        */
    clr = APLL_RATIO(7) |CORE_RATIO(7)| CORE2_RATIO(7)|
            COREM0_RATIO(7) | COREM1_RATIO(7) |
          PERIPH_RATIO(7) | ATB_RATIO(7) | PCLK_DBG_RATIO(7) ;
@@ -129,9 +140,9 @@ void system_clock_init(void)
        continue;
 
        /* Set dividers for MOUThpm
-        * MOUThpm =    MOUTapll = 1400 MHz
-        * OUTcopy =    MOUThpm / (COPY_RATIO + 1) = 200 (DIVcopy:COPY_RATIO=6)
-        * sclkhpm =    OUTcopy / (HPM_RATIO + 1) = 200 (DIVhpm:HPM_RATIO=0)
+        * MOUThpm  =    MOUTapll = 1400 MHz
+        * DOUTcopy =    MOUThpm / (COPY_RATIO + 1) = 200 (DIVcopy:COPY_RATIO=6)
+        * sclkhpm  =    DOUTcopy / (HPM_RATIO + 1) = 200 (DIVhpm:HPM_RATIO=0)
         * ACLK_CORES = ARMCLK / (CORES_RATIO + 1) = 233 (DIVcores:CORES_RATIO=5)
         */
    clr = COPY_RATIO(7) | HPM_RATIO(7) | CORES_RATIO(7);
@@ -157,6 +168,14 @@ void system_clock_init(void)
         * ACLK_ACP = MOUTdmc_bus / (ACP_RATIO + 1) = 200MHz (DIVacp:ACP_RATIO=3)
         * PCLK_ACP = ACLK_ACP / (ACP_PCLK_RATIO + 1) = 100MHz (DIVacp_pclk:ACP_PCLK_RATIO=1)
         * SCLK_DPHY = MOUTdphy / (DPHY_RATIO + 1) = 400MHz (DIVdphy:DPHY_RATIO=1)
+        */
+       /**
+        * ACLK_ACP = MOUTDMC_BUS/(ACP_RATIO + 1)    = 200MHz
+        * PCLK_ACP = ACLK_ACP/(ACP_PCLK_RATIO + 1)  = 100MHz
+        * SCLK_DPHY = MOUTDPHY/(DPHY_RATIO + 1)     = 
+        * DOUTDMC = MOUTDMC_BUS/(DMC_RATIO + 1)     = 
+        * ACLK_DMCD = DOUTDMC/(DMCD_RATIO + 1)      = 200MHz
+        * ACLK_DMCP = ACLK_DMCD/(DMCP_RATIO + 1)    = 100MHz
         */
    clr = DMC_RATIO(7) | DMCD_RATIO(7) | DMCP_RATIO(7) |
                ACP_RATIO(7) | ACP_PCLK_RATIO(7) | DPHY_RATIO(7);
@@ -500,6 +519,36 @@ void system_clock_init(void)
            MUX_ACLK_400_MCUISP_SUB_SEL(1) | MUX_ACLK_200_SUB_SEL(1) |
            MUX_ACLK_266_GPS_SEL(0) | MUX_ACLK_266_GPS_SUB_SEL(1);
    clrsetbits_le32(&clk->src_top1, clr, set);
+
+   /* Wait for mux change */
+   sdelay(0x30000);
+
+   /**** set FSYS_BLK clocks ****/
+   /* CLK_SRC_FSYS */
+   /**
+    * *** Control MUXMIPIHSI, which is the source clock of MIPIHSI ***
+    * 0 = SCLKMPLL_USER_T
+    * 1 = SCLKAPLL
+    * *** Controls MUXMMC0~4 ****
+    * 0000 = XXTI
+    * 0001 = XusbXTI
+    * 0010 = SCLK_HDMI24M
+    * 0011 = SCLK_USBPHY0
+    * 0101 = SCLK_HDMIPHY
+    * 0110 = SCLKMPLL_USER_T(=MPLL, 800MHz)
+    * 0111 = SCLKEPLL
+    * 1000 = SCLKVPLL
+    * Others = Reserved
+    * MUXMMC0~4 is the source clock of MMC0~4.
+    */
+   clr = MIPIHSI_SEL(1) | MMC4_SEL(0xf) |
+           MMC3_SEL(0xf) | MMC2_SEL(0xf) |
+           MMC1_SEL(0xf) | MMC0_SEL(0xf);
+
+   set = MIPIHSI_SEL(1) | MMC4_SEL(0x6) |
+           MMC3_SEL(0x6) | MMC2_SEL(0x6) |
+           MMC1_SEL(0x6) | MMC0_SEL(0x6);
+   clrsetbits_le32(&clk->src_fsys, clr, set);
 
    /* Wait for mux change */
    sdelay(0x30000);

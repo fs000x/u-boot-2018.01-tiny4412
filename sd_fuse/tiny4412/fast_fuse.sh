@@ -7,6 +7,7 @@
 # published by the Free Software Foundation.
 #
 ####################################
+umount /dev/sdb1
 
 if [ -z $1 ]
 then

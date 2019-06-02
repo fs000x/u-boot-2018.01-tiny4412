@@ -1022,11 +1022,29 @@ retry_ssr:
 
 		return err;
 	}
-
+	{
+		unsigned char *ssr_data = (unsigned char *)ssr;
+		printf("read ssr 64 bytes: [");
+		for (i = 0; i < 64; i++)
+		{
+			if (i%16 == 0) printf("\n");
+			printf(" %02x", ssr_data[i]);
+		}
+		printf("] end ssr 64bytes\n");
+	}
 	for (i = 0; i < 16; i++)
 		ssr[i] = be32_to_cpu(ssr[i]);
-
+	{
+		printf("read ssr 16 uint: [");
+		for (i = 0; i < 16; i++)
+		{
+			if (i%4 == 0) printf("\n");
+			printf(" %08x", ssr[i]);
+		}
+		printf("] end ssr 16 uint\n");
+	}
 	au = (ssr[2] >> 12) & 0xF;
+	printf("au: %d, version: %#x\n", au, mmc->version);
 	if ((au <= 9) || (mmc->version == SD_VERSION_3)) {
 		mmc->ssr.au = sd_au_size[au];
 		es = (ssr[3] >> 24) & 0xFF;
@@ -1092,6 +1110,7 @@ void mmc_set_clock(struct mmc *mmc, uint clock)
 		clock = mmc->cfg->f_min;
 
 	mmc->clock = clock;
+	printf("%s: clock %u, min %u, max %u\n", __func__, clock, mmc->cfg->f_min, mmc->cfg->f_max);
 
 	mmc_set_ios(mmc);
 }
@@ -1545,6 +1564,7 @@ static int mmc_startup(struct mmc *mmc)
 		}
 	}
 
+	printf("mmc_set_clock %u\n", mmc->tran_speed);
 	mmc_set_clock(mmc, mmc->tran_speed);
 
 	/* Fix the block length for DDR mode */
@@ -1561,9 +1581,11 @@ static int mmc_startup(struct mmc *mmc)
 	bdesc->blksz = mmc->read_bl_len;
 	bdesc->log2blksz = LOG2(bdesc->blksz);
 	bdesc->lba = lldiv(mmc->capacity, mmc->read_bl_len);
+	printf("blksz = %ld\n", bdesc->blksz);
 #if !defined(CONFIG_SPL_BUILD) || \
 		(defined(CONFIG_SPL_LIBCOMMON_SUPPORT) && \
 		!defined(CONFIG_USE_TINY_PRINTF))
+	printf("sprintf ----------------------------------\n");
 	sprintf(bdesc->vendor, "Man %06x Snr %04x%04x",
 		mmc->cid[0] >> 24, (mmc->cid[2] & 0xffff),
 		(mmc->cid[3] >> 16) & 0xffff);

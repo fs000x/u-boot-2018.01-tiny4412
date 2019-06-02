@@ -59,13 +59,20 @@ static void sdhci_transfer_pio(struct sdhci_host *host, struct mmc_data *data)
 {
 	int i;
 	char *offs;
+
+	printf("%s [\n", __func__);
 	for (i = 0; i < data->blocksize; i += 4) {
 		offs = data->dest + i;
 		if (data->flags == MMC_DATA_READ)
+		{
 			*(u32 *)offs = sdhci_readl(host, SDHCI_BUFFER);
+			printf(" %08x", *(u32 *)offs);
+			if (i%16) printf("\n");
+		}
 		else
 			sdhci_writel(host, *(u32 *)offs, SDHCI_BUFFER);
 	}
+	printf("\n]----------------------------------------\n");
 }
 
 static int sdhci_transfer_data(struct sdhci_host *host, struct mmc_data *data,
@@ -80,19 +87,24 @@ static int sdhci_transfer_data(struct sdhci_host *host, struct mmc_data *data,
 	sdhci_writeb(host, ctrl, SDHCI_HOST_CONTROL);
 #endif
 
+	printf("sdhci_transfer_data\n");
 	timeout = 1000000;
 	rdy = SDHCI_INT_SPACE_AVAIL | SDHCI_INT_DATA_AVAIL;
 	mask = SDHCI_DATA_AVAILABLE | SDHCI_SPACE_AVAILABLE;
 	do {
 		stat = sdhci_readl(host, SDHCI_INT_STATUS);
+		printf("stat %#x, transfer_done %d, rdy %#x\n", stat, transfer_done, rdy);
 		if (stat & SDHCI_INT_ERROR) {
 			printf("%s: Error detected in status(0x%X)!\n",
 			       __func__, stat);
 			return -EIO;
 		}
 		if (!transfer_done && (stat & rdy)) {
-			if (!(sdhci_readl(host, SDHCI_PRESENT_STATE) & mask))
+			unsigned int statedata = sdhci_readl(host, SDHCI_PRESENT_STATE);
+			printf("check SDHCI_PRESENT_STATE %#x & %#x mask\n", statedata,mask);
+			if (!(statedata & mask))
 				continue;
+			printf("state is available\n");
 			sdhci_writel(host, rdy, SDHCI_INT_STATUS);
 			sdhci_transfer_pio(host, data);
 			data->dest += data->blocksize;
@@ -157,6 +169,7 @@ static int sdhci_send_command(struct mmc *mmc, struct mmc_cmd *cmd,
 	/* Timeout unit - ms */
 	static unsigned int cmd_timeout = SDHCI_CMD_DEFAULT_TIMEOUT;
 
+	printf("%s aligned_buffer %p, data->dest %p\n", __func__, aligned_buffer, data->dest);
 	sdhci_writel(host, SDHCI_INT_ALL_MASK, SDHCI_INT_STATUS);
 	mask = SDHCI_CMD_INHIBIT | SDHCI_DATA_INHIBIT;
 
@@ -278,6 +291,7 @@ static int sdhci_send_command(struct mmc *mmc, struct mmc_cmd *cmd,
 	} else
 		ret = -1;
 
+	printf("%s ret = %d, start_addr %#x\n", __func__, ret, start_addr);
 	if (!ret && data)
 		ret = sdhci_transfer_data(host, data, start_addr);
 
@@ -324,7 +338,7 @@ static int sdhci_set_clock(struct mmc *mmc, unsigned int clock)
 
 	if (clock == 0)
 		return 0;
-
+printf("%s: ver %d, clk_mul %u, max_clk %u, clock %u\n", __func__, SDHCI_GET_VERSION(host), host->clk_mul, host->max_clk, clock);
 	if (SDHCI_GET_VERSION(host) >= SDHCI_SPEC_300) {
 		/*
 		 * Check if the Host Controller supports Programmable Clock
@@ -435,7 +449,7 @@ static int sdhci_set_ios(struct mmc *mmc)
 
 	if (host->ops && host->ops->set_control_reg)
 		host->ops->set_control_reg(host);
-
+printf("%s: mmcclk %u, hostclk %u\n", __func__, mmc->clock, host->clock);
 	if (mmc->clock != host->clock)
 		sdhci_set_clock(mmc, mmc->clock);
 

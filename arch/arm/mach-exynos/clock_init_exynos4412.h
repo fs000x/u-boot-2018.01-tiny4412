@@ -346,5 +346,12 @@
 #define DIV_STAT_FSYS3_CHANGING        (DIV_MMC4(DIV_STAT_CHANGING) | \
                    DIV_MMC4_PRE(DIV_STAT_CHANGING))
 
+/* CLK_SRC_FSYS */
+#define MIPIHSI_SEL(x)  (((x) & 0x1) << 24)
+#define MMC4_SEL(x)     (((x) & 0xf) << 16)
+#define MMC3_SEL(x)     (((x) & 0xf) << 12)
+#define MMC2_SEL(x)     (((x) & 0xf) << 8)
+#define MMC1_SEL(x)     (((x) & 0xf) << 4)
+#define MMC0_SEL(x)     (((x) & 0xf) << 0)
 
 #endif
